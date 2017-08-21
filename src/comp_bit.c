@@ -20,7 +20,7 @@ int comp_bit(){
   fputs("instruct do par {\n", fp);
   fputs("l = a&(^b);\n", fp);
   fputs("eq = ^(a@b);\n", fp);
-  fputs("a = (^a)&b;\n", fp);
+  fputs("s = (^a)&b;\n", fp);
 
   fputs("}\n", fp);     // instrin do par {
   fputs("}\n", fp);     // module comp_bit{
