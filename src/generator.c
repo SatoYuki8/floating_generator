@@ -3,14 +3,19 @@
 
 int generator(int argc, char **argv){  
 
+  comp_bit_head();
   comp_bit();
   
+  exp_comp_head(atoi(argv[1]));
   exp_comp(atoi(argv[1]));
 
-  sub_shift(atoi(argv[1]), atoi(argv[2]));
+  sub_shift_head(atoi(argv[1]), atoi(argv[2]));  
+  sub_shift(atoi(argv[1]), atoi(argv[2]));  
 
+  exp_inc_right_shift_head(atoi(argv[1]), atoi(argv[2]));
   exp_inc_right_shift(atoi(argv[1]), atoi(argv[2]));
 
+  add_or_sub_head(atoi(argv[2]));
   add_or_sub(atoi(argv[2]));
   
   return 0;

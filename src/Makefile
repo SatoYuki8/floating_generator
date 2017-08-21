@@ -6,7 +6,8 @@ comp:	*.c
 
 do:	a.out
 	./a.out 5 13
-	ls *.sfl
+	ls *.sfl *.h
 
 clean:
 	rm -rf *~ *.out *.o *.sfl *.v
+	ls *.h | grep -v -E 'generate.h' | xargs rm -r
