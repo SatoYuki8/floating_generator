@@ -17,7 +17,7 @@ int comp_bit(){
   fputs("output eq;\n", fp);
   fputs("instrin do;\n", fp);
 
-  fputs("instrin do par {\n", fp);
+  fputs("instruct do par {\n", fp);
   fputs("l = a&(^b);\n", fp);
   fputs("eq = ^(a@b);\n", fp);
   fputs("a = (^a)&b;\n", fp);

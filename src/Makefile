@@ -9,4 +9,4 @@ do:	a.out
 	ls *.sfl
 
 clean:
-	rm -rf *~ *.out *.o *.sfl
+	rm -rf *~ *.out *.o *.sfl *.v
