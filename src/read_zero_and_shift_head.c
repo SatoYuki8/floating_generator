@@ -12,7 +12,7 @@ int read_zero_and_shift_head(int exp, int frac){
 
   fprintf(fp,
 	  "declare read_zero_and_shift{\n"
-	  "intput frac<%d>;\n"
+	  "input frac<%d>;\n"
 	  "input exp<%d>;\n"
 	  "output shifted_frac<%d>;\n"
 	  "output sub_exo<%d>;\n"
