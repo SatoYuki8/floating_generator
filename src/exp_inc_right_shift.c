@@ -17,7 +17,7 @@ int exp_inc_right_shift(int exp, int frac){
   fprintf(fp, "output shifted_frac<%d>;\n", frac);
   fprintf(fp, "instrin do;\n\n");
 
-  fprintf(fp, "innstruct do par{\n");
+  fprintf(fp, "instruct do par{\n");
   fprintf(fp, "inc_exp = exp + 0b");
 
   for (i=0; i<exp; i++){
