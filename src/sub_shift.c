@@ -51,7 +51,7 @@ int sub_shift(int exp, int frac){
   fputs("shifted_frac_b = frac_b >> exp_sub;\n", fp);
   fputs("tmp_shift = (frac_b || 0b", fp);
 
-  for (i=0; i<frac*3; i++){
+  for (i=0; i<frac*2; i++){
     fputs("0", fp);
   }
   fputs(") >> exp_sub;\n", fp);

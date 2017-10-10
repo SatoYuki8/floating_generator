@@ -11,6 +11,7 @@ int generator(int argc, char **argv){
   exp_comp_head(atoi(argv[1]));
   exp_comp(atoi(argv[1]));
 
+  /*
   sub_shift_head(atoi(argv[1]), atoi(argv[2]));  
   sub_shift(atoi(argv[1]), atoi(argv[2]));  
 
@@ -22,6 +23,19 @@ int generator(int argc, char **argv){
 
   read_zero_and_shift_head(atoi(argv[1]), atoi(argv[2]));
   read_zero_and_shift(atoi(argv[1]), atoi(argv[2]));
+  */
+
+  sub_shift_head(atoi(argv[1]), atoi(argv[2])+3);  
+  sub_shift(atoi(argv[1]), atoi(argv[2])+3);  
+
+  exp_inc_right_shift_head(atoi(argv[1]), atoi(argv[2])+3);
+  exp_inc_right_shift(atoi(argv[1]), atoi(argv[2])+3);
+
+  add_or_sub_head(atoi(argv[2])+3);
+  add_or_sub(atoi(argv[2])+3);
+
+  read_zero_and_shift_head(atoi(argv[1]), atoi(argv[2])+3);
+  read_zero_and_shift(atoi(argv[1]), atoi(argv[2])+3);
 
   return 0;
 }

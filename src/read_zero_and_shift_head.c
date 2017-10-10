@@ -15,7 +15,7 @@ int read_zero_and_shift_head(int exp, int frac){
 	  "input frac<%d>;\n"
 	  "input exp<%d>;\n"
 	  "output shifted_frac<%d>;\n"
-	  "output sub_exo<%d>;\n"
+	  "output sub_exp<%d>;\n"
 	  "instrin do;\n\n"
 	  "instr_arg do(frac, exp);\n"
 	  "}\n"
