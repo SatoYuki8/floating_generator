@@ -22,7 +22,7 @@ int read_zero_and_shift(int exp, int frac){
 	  );
   
   int t=frac;
-  int amount=0;;
+  int amount=1;
   
   while(t != 0){
     t=t/2;
