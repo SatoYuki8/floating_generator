@@ -28,39 +28,42 @@ int exp_comp(int exp){
   fputs("output l;\n", fp);
   fputs("instrin do;\n\n", fp);
 
+  fprintf(fp,"sel_v ");
+
+  for (i=0; i<exp-1; i++){
+    fprintf(fp,"f%d", i);
+
+    if (i != exp-2) {
+      fprintf(fp,", ");
+    } else {
+      fprintf(fp,";\n");
+    }
+  }
+
+
   fprintf(fp,"comp_bit ");
 
-  for (i=1; i<exp+1; i++){
+  for (i=0; i<exp-1; i++){
     fprintf(fp,"comp%d", i);
 
-    if (i != exp) {
+    if (i != exp-2) {
       fprintf(fp,", ");
     } else {
       fprintf(fp,";\n");
     }
   }
   
-  fprintf(fp,"\n");
+  fprintf(fp,"\n\n");
   
-  fprintf(fp,"\ninstruct do par {\n");
-  fprintf(fp,"alt {\n");
+  fprintf(fp,"instruct do par {\n");
 
-  for (i=1; i < exp + 1; i++) {
-    fprintf(fp,"(comp%d.do(a<%d>, b<%d>).l == 0b1): l=0b1;\n", i, exp-i, exp-i);
-    fprintf(fp,"(comp%d.s == 0b1): l=0b0;\n", i);
-
-    if (i == exp){
-      fprintf(fp,"else: l=0b0;\n");
-    } else {
-      fprintf(fp,"(comp%d.eq ==0b1): alt {\n", i);
-    }
-  }
-
-  for (i=1; i < exp; i++) {
-    fprintf(fp,"}\n");
+  fprintf(fp, "f0 = a<0>&^b<0>;\n");
+  for (i=1; i<exp-1; i++){
+    fprintf(fp,"f%d = comp%d.do(a<%d>, b<%d>, f%d).fout;\n", i, i-1, i, i, i-1);
   }
   
-  fprintf(fp,"}\n");   // alt {
+  fprintf(fp, "l = comp%d.do(a<%d>, b<%d>, f%d).fout;\n", exp-2, exp-1, exp-1, exp-2);
+
   fprintf(fp,"}\n");   // instruct do par {
   fprintf(fp,"}\n");   // module exp_comp{
 

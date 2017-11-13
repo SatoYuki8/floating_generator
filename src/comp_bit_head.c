@@ -13,12 +13,11 @@ int comp_bit_head(){
   fprintf(fp,
 	  "declare comp_bit{\n"
 	  "input a, b;\n"
-	  "output l;\n"
-	  "output s; \n"
-	  "output eq;\n"
+	  "input fin;\n"
+	  "output fout;\n"
 	  "instrin do;\n\n"
 	  
-	  "instr_arg do(a, b);\n"
+	  "instr_arg do(a, b, fin);\n"
 	  "}\n"
 	  );
 

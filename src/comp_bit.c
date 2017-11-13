@@ -12,15 +12,12 @@ int comp_bit(){
   fputs("module comp_bit{\n", fp);
   
   fputs("input a, b;\n", fp);
-  fputs("output l;\n", fp);
-  fputs("output s;\n", fp);
-  fputs("output eq;\n", fp);
+  fputs("input fin;\n", fp);
+  fputs("output fout;\n", fp);
   fputs("instrin do;\n", fp);
 
   fputs("instruct do par {\n", fp);
-  fputs("l = a&(^b);\n", fp);
-  fputs("eq = ^(a@b);\n", fp);
-  fputs("s = (^a)&b;\n", fp);
+  fputs("fout = ( (a&^b) | ((a|^b) & fin) );\n", fp);
 
   fputs("}\n", fp);     // instrin do par {
   fputs("}\n", fp);     // module comp_bit{
