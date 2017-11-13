@@ -37,5 +37,8 @@ int generator(int argc, char **argv){
   read_zero_and_shift_head(atoi(argv[1]), atoi(argv[2])+3);
   read_zero_and_shift(atoi(argv[1]), atoi(argv[2])+3);
 
+  round_process_head(atoi(argv[2])+3);
+  round_process(atoi(argv[2])+3);
+
   return 0;
 }
