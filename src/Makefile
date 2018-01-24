@@ -5,7 +5,7 @@ comp:	*.c
 
 
 do:	a.out
-	./a.out 5 13
+	./a.out 5 10
 	ls *.sfl *.h
 
 clean:

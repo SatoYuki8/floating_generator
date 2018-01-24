@@ -1,11 +1,3 @@
 sflread add_half.sfl
-sflread comp_bit.sfl
-sflread exp_comp.sfl
-sflread sub_shift.sfl
-sflread add_or_sub.sfl
-sflread exp_inc_right_shift.sfl
-sflread read_zero_and_shift.sfl
-sflread round_process.sfl
 
 autoinstall add_half
-

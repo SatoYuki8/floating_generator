@@ -1,25 +1,14 @@
-#
-#	add_hald
-#
-
 sflread add_half.sfl
-sflread comp_bit.sfl
-sflread exp_comp.sfl
-sflread sub_shift.sfl
-sflread add_or_sub.sfl
-sflread exp_inc_right_shift.sfl
-sflread read_zero_and_shift.sfl
-sflread round_process.sfl
 
 autoinstall add_half
 
-speak result_sample.result
+speak add_half.result
 
 set do 1; hold do;
 set a 0000000000000000;
 set b 0000000000000000;
 hold a; hold b;
-rpt_add A "%5t  %b %b %b\n" a b sum
+rpt_add A "%5t  %b %b %b\n" a b result
 forward +1
 
 #    以下に生成したスクリプト
