@@ -1,5 +1,14 @@
+//#ifndef GEN_H
+//#define GEN_H
+#pragma once
+
 #include <stdio.h>
 #include <stdlib.h>
+
+int comment();
+int fcomment(FILE *fp);
+int DecToBi(int dec, int dig, FILE *fp);
+char ZeroStr(int N, char in[]);
 
 int comment(){
   puts("\n/* This is code of Floating-Calcuration generator. */");
@@ -17,7 +26,6 @@ int fcomment(FILE *fp){
   return 0;
 }
 
-
 /* DecToBi function changes Decimal Num to Binary Num.  */
 /* dec -> 2進数に変換したい10進数, dig -> 桁数            */
 int DecToBi(int dec, int dig, FILE *fp){
@@ -25,6 +33,8 @@ int DecToBi(int dec, int dig, FILE *fp){
   int *buf;
   int i;
   int num = dec;
+
+  if (dig <= 0) return 0;
 
   buf = (int*)calloc(dig, sizeof(int));
 
@@ -36,6 +46,7 @@ int DecToBi(int dec, int dig, FILE *fp){
     num = num / 2;
   }
 
+  fprintf(fp, "0b");
   for (i=0; i<dig; i++){
     fprintf(fp, "%d", buf[i]);
   }
@@ -43,3 +54,18 @@ int DecToBi(int dec, int dig, FILE *fp){
   free(buf);
   return 0;
 }
+
+/* 0b00...0の形の文字列をつくる */
+char ZeroStr(int N, char in[]){
+  in[0] = '0';
+  in[1] = 'b';
+
+  int i;
+  for(i=2; i < N+2; i++){
+    in[i] = '0';
+  }
+  
+  return 0;
+}
+
+//#endif
