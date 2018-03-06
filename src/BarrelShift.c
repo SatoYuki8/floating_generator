@@ -23,6 +23,8 @@ int BarrelShift(int exp, int frac, int bit_width, FILE *fp){
 
   int shamt = (int)log2(bit_width-1) + 1;
 
+  if (shamt > exp) shamt = exp;
+  
   fprintf(fp,
 	  "module BarrelShift{\n"
 	  "input a<%d>;\n"
@@ -80,14 +82,15 @@ int BarrelShift(int exp, int frac, int bit_width, FILE *fp){
 	      "t%d = ",
 	      i, i
 	      );
-      DecToBi(0, (int)pow(2,i), fp);  
-      fprintf(fp,
-	      " || %c%d<%d:%d>;\n"
-	      "s%d = %c%d<%d:%d> || s%d;\n"
-	      "}\n",
-	      aort, i-1, bit_width-1, (int)pow(2,i),
-	      i, aort, i-1, ulp+((int)pow(2,i) - 1), ulp, i-1
-	      );
+      DecToBi(0, (int)pow(2,i), fp);
+	fprintf(fp,
+		" || %c%d<%d:%d>;\n"
+		"s%d = %c%d<%d:%d> || s%d;\n"
+		"}\n",
+		aort, i-1, bit_width-1, (int)pow(2,i),
+		i, aort, i-1, ulp+((int)pow(2,i) - 1), ulp, i-1
+		);
+      
       fprintf(fp,
 	      "else: par{\n"
 	      "t%d = %c%d;\n"
@@ -104,13 +107,29 @@ int BarrelShift(int exp, int frac, int bit_width, FILE *fp){
     }
   }
 
-  fprintf(fp,
-	  "f = t%d<%d:1> || /|(s%d<%d:0>);\n"
-	  "}\n"
-	  "}\n",
-	  shamt-1, bit_width-1, shamt-1, (int)pow(2,shamt)-3
-	  );
-
+  char *zero_full;
+  zero_full = (char *)malloc(bit_width+2);
+  ZeroStr(bit_width, zero_full);
+  if ((exp-1) < i) {
+    fprintf(fp,
+	    "f = t%d<%d:1> || /|(s%d<%d:0>);\n"
+	    "}\n"
+	    "}\n",
+	    shamt-1, bit_width-1, shamt-1, (int)pow(2,shamt)-3
+	    );
+  }else{
+    fprintf(fp,
+	    "alt{\n"
+	    "(/|amount<%d:%d>): f = %s;\n"
+	    "else: f = t%d<%d:1> || /|(s%d<%d:0>);\n"
+	    "}\n"
+	    "}\n"
+	    "}\n",
+	    exp-1, i, zero_full,
+	    shamt-1, bit_width-1, shamt-1, (int)pow(2,shamt)-3
+	    );
+  }
+  
   printf("\n");
 
   return 0;
