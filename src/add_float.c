@@ -160,7 +160,7 @@ int add_float(int exp, int frac, int bit_width, FILE *fp){
   fprintf(fp,
 	  "alt{\n"
 	  "(Cm == %s): z = %s;\n"
-	  "(Cexp == %s): z = Cs || Cexp || Cm<%d:3>;\n"
+	  //"(Cexp == %s): z = Cs || Cexp || Cm<%d:3>;\n"
 	  "else: par{\n"
 	  "lzshift.do(Cm<%d:0> || 0b0);\n"
 	  "round = lzshift.f<4>&(lzshift.f<5>|lzshift.f<3>|(/|lzshift.f<2:0>));\n"
@@ -175,8 +175,7 @@ int add_float(int exp, int frac, int bit_width, FILE *fp){
 	  "}\n"
 	  "\n",
 	  zero_frac, zero_full,
-	  zero_exp,
-	  fhead+3,
+	  // zero_exp, fhead+3,
 	  frac_msb-1,
 	  frac_msb-1,
 	  frac_msb-1
@@ -188,7 +187,11 @@ int add_float(int exp, int frac, int bit_width, FILE *fp){
 	  "}\n"
 	  );
 
-  fprintf(fp, "}\n");  //finish
+  fprintf(fp, "}\n\n");  //finish
+
+  free(zero_exp);
+  free(zero_frac);
+  free(zero_full);
   
   return 0;
 }

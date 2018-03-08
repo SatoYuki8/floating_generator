@@ -67,20 +67,47 @@ int LeadingZeroShift(int exp, int frac, int bit_width, FILE *fp){
   }
   free(zero);
 
-  int j;
-  fputs("amount = ", fp); DecToBi(0, exp-shamt, fp);
-  for (j=shamt-1; j>=0; j--){
-    if ((exp-shamt <= 0) && (j == shamt-1)) fprintf(fp, "a%d", j);
-    else fprintf(fp, "||a%d", j);
+    int j;
+    char *one_amt;
+    one_amt = (char *)malloc(exp+2);
+    OneStr(exp, one_amt);
+    if (shamt > exp){     //指数部のビット幅がシフト量のビット幅より小さい時
+    fprintf(fp,
+	    "alt{\n"
+	    "("
+	    );
+    for(j=shamt-1; j>exp-1; j--){
+      fprintf(fp, "a%d", j);
+      if(j != exp) fputs("|", fp);
+    }
+    fprintf(fp,
+	    "): amount = %s;\n"
+	    "else: amount = ",
+	    one_amt
+	    );
+    for (j=exp-1; j>=0; j--){
+      if (j==exp-1) fprintf(fp, "a%d", j);
+      else fprintf(fp, "||a%d", j);
+    }
+    fputs(";\n"
+	  "}\n", fp);
+  }else{                //指数部のビット幅がシフト量のビット幅以上の時
+    fputs("amount = ", fp); DecToBi(0, exp-shamt, fp);
+    for (j=shamt-1; j>=0; j--){
+      if ((exp-shamt <= 0) && (j == shamt-1)) fprintf(fp, "a%d", j);
+      else fprintf(fp, "||a%d", j);
+    }
+    fputs(";\n", fp);
   }
-  fputs(";\n", fp);
-
+  
   fprintf(fp,
 	  "f = t%d;\n"
 	  "}\n"
 	  "}\n",
 	  shamt-1
 	  );
+
+  free(one_amt);
 
   return 0;
 }

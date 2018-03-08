@@ -10,6 +10,16 @@ int fcomment(FILE *fp);
 int DecToBi(int dec, int dig, FILE *fp);
 char ZeroStr(int N, char in[]);
 
+int help(){
+  puts("******************* HELP **********************\n"
+       "す　お\n"
+       "い　な\n"
+       "た　か\n"
+       "。　が\n"
+       );
+  return 0;
+}
+
 int comment(){
   puts("\n/* This is code of Floating-Calcuration generator. */");
   puts("/*                                                 */");
@@ -67,5 +77,19 @@ char ZeroStr(int N, char in[]){
   
   return 0;
 }
+
+/* 0b11...1の形の文字列をつくる */
+char OneStr(int N, char in[]){
+  in[0] = '0';
+  in[1] = 'b';
+
+  int i;
+  for(i=2; i < N+2; i++){
+    in[i] = '1';
+  }
+  
+  return 0;
+}
+
 
 //#endif
