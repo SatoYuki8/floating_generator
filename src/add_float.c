@@ -18,11 +18,11 @@ int add_float(int exp, int frac, int bit_width, FILE *fp){
   int frac_msb = frac_bit - 1;
   
   char *zero_exp, *zero_full;
-  zero_exp = (char *)malloc(exp+2);
-  zero_full = (char *)malloc(bit_width+2);
+  zero_exp = (char *)malloc(exp*2);
+  zero_full = (char *)malloc(bit_width*2);
   ZeroStr(exp, zero_exp); ZeroStr(bit_width, zero_full);
   char *zero_frac;
-  zero_frac = (char *)malloc(frac_bit+2);
+  zero_frac = (char *)malloc(frac_bit*2);
   ZeroStr(frac_bit, zero_frac);
   
   /*************************************************/
@@ -189,6 +189,7 @@ int add_float(int exp, int frac, int bit_width, FILE *fp){
 
   fprintf(fp, "}\n\n");  //finish
 
+  free(zero_nonsign);
   free(zero_exp);
   free(zero_frac);
   free(zero_full);

@@ -44,7 +44,7 @@ int LeadingZeroShift(int exp, int frac, int bit_width, FILE *fp){
   for (i=0;i<shamt;i++){
     fputs("alt{\n", fp);
     
-    zero = (char *)malloc((int)pow(2,shamt-i-1)+2);
+    zero = (char *)malloc((int)pow(2,shamt-i-1)*2);
     ZeroStr((int)pow(2,shamt-i-1), zero);
 
     if (i == 0){

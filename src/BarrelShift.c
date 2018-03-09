@@ -108,7 +108,7 @@ int BarrelShift(int exp, int frac, int bit_width, FILE *fp){
   }
 
   char *zero_full;
-  zero_full = (char *)malloc(bit_width+2);
+  zero_full = (char *)malloc(bit_width*2);
   ZeroStr(bit_width, zero_full);
   if ((exp-1) < i) {
     fprintf(fp,
@@ -130,6 +130,7 @@ int BarrelShift(int exp, int frac, int bit_width, FILE *fp){
 	    );
   }
   
+  free(zero_full);
   printf("\n");
 
   return 0;
