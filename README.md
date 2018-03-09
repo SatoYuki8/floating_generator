@@ -1,5 +1,5 @@
-Floationg Calculation generator.
+Floationg-Point Arithmetic Module generator written by SFL.
 
-This code is written by SFL.
+This generator is written by C.
 
-We can chose Precision.
+You can chose Precision.
