@@ -23,6 +23,32 @@ int IncreaseFrac(int frac, FILE *fp){
   int bit_head = frac - 2;
 
   fprintf(fp,
+	  "circuit IncreaseFrac{\n"
+	  "input cin;\n"
+	  "input in<%d>;\n"
+	  "output out<%d>;\n"
+	  "output p;\n"
+	  "instrin do;\n\n"
+	  "sel tmp<%d>;\n\n"
+	  "instruct do par{\n"
+	  "tmp = (0b0||in) + cin;\n"
+	  "out = tmp<%d:0>;\n"
+	  "p = tmp<%d>;\n"
+	  "}\n}\n\n",
+	  frac, frac, frac+1,
+	  frac-1, frac
+	  );
+ 
+
+  return 0;
+}
+
+/*
+int IncreaseFrac(int frac, FILE *fp){
+  
+  int bit_head = frac - 2;
+
+  fprintf(fp,
 	  "module IncreaseFrac{\n"
 	  "input cin;\n"
 	  "input in<%d>;\n"
@@ -31,7 +57,7 @@ int IncreaseFrac(int frac, FILE *fp){
 	  "instrin do;\n\n"
 	  "sel cry<%d>;\n\n"
 	  "instruct do par{\n"
-	  "p = /&(in);\n"
+	  "p = /&(in) & cin;\n"
 	  "cry = (/&(in<%d:0>) & cin)\n",
 	  frac, frac, frac,
 	  bit_head
@@ -55,3 +81,4 @@ int IncreaseFrac(int frac, FILE *fp){
 
   return 0;
 }
+*/

@@ -22,6 +22,7 @@ int BarrelShiftDec(int exp, int frac, int bit_width, FILE *fp){
 int BarrelShift(int exp, int frac, int bit_width, FILE *fp){
 
   int shamt = (int)log2(bit_width-1) + 1;
+  //int shamt = (int)log2(frac+5) + 1;
 
   if (shamt > exp) shamt = exp;
   
@@ -83,6 +84,17 @@ int BarrelShift(int exp, int frac, int bit_width, FILE *fp){
 	      i, i
 	      );
       DecToBi(0, (int)pow(2,i), fp);
+
+      /********************************************************/
+      if((ulp+((int)pow(2,i)-1)) >= bit_width){
+	fprintf(fp,
+		" || %c%d<%d:%d>;\n"
+		"s%d = %d#(0b0) || %c%d<%d:%d> || s%d;\n"
+		"}\n",
+		aort, i-1, bit_width-1, (int)pow(2,i),
+		i, ulp+((int)pow(2,i)-1) - (bit_width-1), aort, i-1, bit_width - 1, ulp, i-1
+		);
+      }else{
 	fprintf(fp,
 		" || %c%d<%d:%d>;\n"
 		"s%d = %c%d<%d:%d> || s%d;\n"
@@ -90,6 +102,8 @@ int BarrelShift(int exp, int frac, int bit_width, FILE *fp){
 		aort, i-1, bit_width-1, (int)pow(2,i),
 		i, aort, i-1, ulp+((int)pow(2,i) - 1), ulp, i-1
 		);
+      }
+      /********************************************************/
       
       fprintf(fp,
 	      "else: par{\n"

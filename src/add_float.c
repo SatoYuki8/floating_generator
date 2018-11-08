@@ -74,6 +74,12 @@ int add_float(int exp, int frac, int bit_width, FILE *fp){
 
   //leading zero shift
   fprintf(fp,
+	  "sel Ds, Dexp<%d>, Dm<%d>;\n",
+	  exp, frac_bit
+	  );
+
+  //rond and finish
+  fprintf(fp,
 	  "sel round;\n"
 	  "sel z<%d>;\n"
 	  "",
@@ -157,6 +163,7 @@ int add_float(int exp, int frac, int bit_width, FILE *fp){
 
 
   //leading zero shift
+  /*
   fprintf(fp,
 	  "alt{\n"
 	  "(Cm == %s): z = %s;\n"
@@ -180,7 +187,36 @@ int add_float(int exp, int frac, int bit_width, FILE *fp){
 	  frac_msb-1,
 	  frac_msb-1
 	  );
+  */
+  fprintf(fp,
+	  "alt{\n"
+	  "(Cm == %s): par{\n"
+	  "Ds = 0b0;\n"
+	  "Dexp = %d#(0b0);\n"
+	  "Dm = %d#(0b0);\n"
+	  "}\n"
+	  "else: par{\n"
+	  "lzshift.do(Cm<%d:0> || 0b0);\n"
+	  "Ds = Cs;\n"
+	  "Dexp = (Cexp + ^(lzshift.amount) + 0b1) + 0b1;\n"
+	  "Dm = lzshift.f;\n"
+	  "}\n"
+	  "}\n"
+	  "\n",
+	  zero_frac,
+	  exp,
+	  frac_bit,
+	  frac_bit-2
+	  );
 
+  //Round
+  fprintf(fp,
+	  "round = Dm<4>&(Dm<5>|Dm<3>|(/|Dm<2:0>));\n"
+	  "incfrac.do(round, Dm<%d:5>);\n"
+	  "z = Ds || (Dexp + incfrac.p) || incfrac.out;\n\n",
+	  frac_msb-1
+	  );
+  
   //return result
   fprintf(fp,
 	  "result = z;\n"

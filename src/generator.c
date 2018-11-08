@@ -25,7 +25,8 @@ int generator(int argc, char **argv){
   int i;
   int module_flag=0;
   for(i=0; i<argc ;i++){
-    if (!strcmp(argv[i], "TestBench")) test_bench(bit_width, fp);
+    if (!strcmp(argv[i], "Wrapper")) wrapper(bit_width, fp);
+    if (!strcmp(argv[i], "wrapper")) wrapper(bit_width, fp);
     if (!strcmp(argv[i], "FPAdder")&module_flag==0){
       FloatingAdder(exp, frac, bit_width, fp); module_flag=1;	
     }else{

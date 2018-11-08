@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-int test_adder(int bit_width, FILE *fp){
+int wrapp_adder(int bit_width, FILE *fp){
   fprintf(fp,
 	  "declare FloatingAdder{\n"
 	  "input a<%d>, b<%d>;\n"
@@ -13,7 +13,7 @@ int test_adder(int bit_width, FILE *fp){
 	  bit_width, bit_width,
 	  bit_width
 	  );
-
+  /*
   fprintf(fp,
 	  "module test_bench{\n"
 	  "input a<%d>, b<%d>;\n"
@@ -46,12 +46,39 @@ int test_adder(int bit_width, FILE *fp){
 	  bit_width,
 	  bit_width
 	  );
+  */
+
+  // test_benchじゃなくてWrapperのほうが正しいと思うから今後直す予定
+  fprintf(fp,
+	  "module test_bench{\n"
+	  "input a<%d>, b<%d>;\n"
+	  "output result<%d>;\n"
+	  "instrin do;\n"
+	  "FloatingAdder add;\n"
+	  "reg_wr ina<%d>;\n"
+	  "reg_wr inb<%d>;\n"
+	  "reg_wr out<%d>;\n"
+	  "instruct do par{\n"
+	  "ina:=a;\n"
+	  "inb:=b;\n"
+	  "out:=add.do(ina, inb).result;\n"
+	  "result = out;\n"
+	  "}\n"
+	  "}\n"
+	  "\n",
+	  bit_width,  bit_width,
+	  bit_width,
+	  bit_width,
+	  bit_width,
+	  bit_width
+	  );
+  
   return 0;
 }
 
-int test_bench(int bit_width, FILE *fp){
+int wrapper(int bit_width, FILE *fp){
 
-  test_adder(bit_width, fp);
+  wrapp_adder(bit_width, fp);
   
   return 0;
 }

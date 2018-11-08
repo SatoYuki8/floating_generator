@@ -1,8 +1,0 @@
-
-:check_main.scr
- SECONDSのシミュレーションでエラーが発生するかどうかチェック
-
-:add_half.scr
- SECONDSdでスクリプトを動作して結果をresult_sample.resultに出力
-
-:
