@@ -48,9 +48,8 @@ int wrapp_adder(int bit_width, FILE *fp){
 	  );
   */
 
-  // test_benchじゃなくてWrapperのほうが正しいと思うから今後直す予定
   fprintf(fp,
-	  "module test_bench{\n"
+	  "module wrapper{\n"
 	  "input a<%d>, b<%d>;\n"
 	  "output result<%d>;\n"
 	  "instrin do;\n"

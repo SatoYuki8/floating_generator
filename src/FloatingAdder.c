@@ -10,9 +10,9 @@ int MantissaAdderDec(int bit_width, FILE *fp);
 int MantissaAdder(int bit_width, FILE *fp);
 int IncreaseFracDec(int frac,  FILE *fp);
 int IncreaseFrac(int frac, FILE *fp);
-int add_float(int exp, int frac, int bit_width, FILE *fp);
+int add_float(int exp, int frac, int bit_width, FILE *fp, int pipe);
 
-int FloatingAdder(int exp, int frac, int bit_width, FILE *fp){
+int FloatingAdder(int exp, int frac, int bit_width, FILE *fp, int pipe){
   int frac_bit = frac + 6;    // msb || frac || G, R, S bits
   int frac_msb = frac_bit - 1;
 
@@ -39,7 +39,7 @@ int FloatingAdder(int exp, int frac, int bit_width, FILE *fp){
   IncreaseFracDec(frac,  fp);
   IncreaseFrac(frac, fp);
   
-  add_float(exp, frac, bit_width, fp);
+  add_float(exp, frac, bit_width, fp, pipe);
 
   return 0;
 }

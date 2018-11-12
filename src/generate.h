@@ -1,14 +1,28 @@
-//#ifndef GEN_H
-//#define GEN_H
-#pragma once
+#ifndef GEN_H
+#define GEN_H
+
 
 #include <stdio.h>
 #include <stdlib.h>
+
+typedef struct flags{
+  int module_flag;
+  int wrapper_flag;
+  int pipeline_flag;
+} _flags_t;
+
+typedef _flags_t flags_t[1];
 
 int comment();
 int fcomment(FILE *fp);
 int DecToBi(int dec, int dig, FILE *fp);
 char ZeroStr(int N, char in[]);
+
+void flags_init(flags_t flag){
+  flag->module_flag = 0;
+  flag->wrapper_flag = 0;
+  flag->pipeline_flag = 0;
+}
 
 int help(){
   puts("******************* HELP **********************\n"
@@ -92,4 +106,4 @@ char OneStr(int N, char in[]){
 }
 
 
-//#endif
+#endif
