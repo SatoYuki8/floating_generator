@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "generate.h"
 
 #define P_IF if (pipe == 1){
 #define P_ELSE }else{

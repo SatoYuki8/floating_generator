@@ -3,7 +3,7 @@ GCC=gcc
 #GCC=~/opt/gcc/bin/gcc #ver6.3.0
 #GCC=~/opt/gnat-gpl-2017-x86_64-linux-bin/bin/gcc #ver6.3.1
 OPTION=-Wall -lm -O2
-OBJECT=src/arg_check.o src/BarrelShift.o src/LeadingZeroShift.o src/MantissaAdder.o src/IncreaseFrac.o src/add_float.o src/wrapper.o src/generator.o src/main.o src/FloatingAdder.o
+OBJECT=src/arg_check.o src/BarrelShift.o src/LeadingZeroShift.o src/MantissaAdder.o src/IncreaseFrac.o src/add_float.o src/wrapper.o src/generator.o src/main.o src/FloatingAdder.o src/generate_function.o src/fpadder_step_measurement.o
 
 all:	bin/ comp
 
@@ -53,5 +53,17 @@ src/FloatingAdder.o:	src/FloatingAdder.c $(HEAD)
 src/FloatingAdder.c:
 	$(GCC) -c $@ $(OPTION)
 
+src/generate_function.o:	src/generate_function.c $(HEAD)
+src/generate_function.c:
+	$(GCC) -c $@ $(OPTION)
+
+src/fpadder_step_measurement.o:	src/fpadder_step_measurement.c $(HEAD)
+src/fpadder_step_measurement.c:
+	$(GCC) -c $@ $(OPTION)
+
+
 clean:
+	rm -rf *~ *.sfl src/*~
+
+distclean:
 	rm -rf *~ *.out src/*.o src/*~ *.sfl bin/*

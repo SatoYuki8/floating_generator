@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "generate.h"
 
-#define ERROR (FILE*)-1
+#define FPERROR (FILE*)-1
 
 void first_message(){
   fprintf(stdout,
@@ -22,14 +23,14 @@ void first_message(){
 }
 
 //int arg_check(int argc, char **argv, int ef[], FILE *fp){
-FILE *arg_check(int argc, char **argv, int ef[]){
+FILE *arg_check(int argc, char **argv, int ef[], flags_t flag){
   FILE *fp;
   int i;
   char output[64];
   
   if (argc == 1){
     first_message();
-    return ERROR;
+    return FPERROR;
   }
 
   first_message();
@@ -37,17 +38,22 @@ FILE *arg_check(int argc, char **argv, int ef[]){
   ef[0]=0; ef[1]=0;
   int filename_flag=0;
   for(i=0; i<argc ;i++){
-    /*
-    if(!strncmp(argv[i], "--help", 6)){
-      help();
-      return 0;
-      }*/
+    if (!strcmp(argv[i], "Wrapper")) flag->wrapper_flag = 1;
+    if (!strcmp(argv[i], "wrapper")) flag->wrapper_flag = 1;
+    if (!strcmp(argv[i], "FPAdder")) flag->module_flag=1;	
+    if (!strcmp(argv[i], "fpadder")) flag->module_flag=1;
+    if (!strcmp(argv[i], "pipeline"))flag->pipeline_flag = 1;
+    if (!strcmp(argv[i], "step1")) flag->step1_flag = 1;
+    if (!strcmp(argv[i], "step2")) flag->step2_flag = 1;
+    if (!strcmp(argv[i], "step3")) flag->step3_flag = 1;
+    if (!strcmp(argv[i], "step4")) flag->step4_flag = 1;
+    if (!strcmp(argv[i], "step5")) flag->step5_flag = 1;
     
     if (!strncmp(argv[i], "filename=", 9)){
       strcpy(output, argv[i]+9);
       if ((fp = fopen(output, "w")) == NULL){
 	fprintf(stderr, "File open error.\n");
-	return ERROR;
+	return FPERROR;
       }
       filename_flag=1;
     }
@@ -57,10 +63,36 @@ FILE *arg_check(int argc, char **argv, int ef[]){
 
   if ((ef[0] == 0) | (ef[1] == 0)){
     printf("Exp or Frac is irregularity.\n");
-    return ERROR;
+    return FPERROR;
+  }
+
+  char main_module_name[16];
+  if(flag->module_flag == 1){
+    strcpy(main_module_name, "FPAdder");
+  }else if(flag->step1_flag == 1){
+    strncpy(main_module_name, GET_VAR_NAME(flag->step1_flag)+6, 5);
+  }else if(flag->step2_flag == 1){
+    strncpy(main_module_name, GET_VAR_NAME(flag->step2_flag)+6, 5);
+  }else if(flag->step3_flag == 1){
+    strncpy(main_module_name, GET_VAR_NAME(flag->step3_flag)+6, 5);
+  }else if(flag->step4_flag == 1){
+    strncpy(main_module_name, GET_VAR_NAME(flag->step4_flag)+6, 5);
+  }else if(flag->step5_flag == 1){
+    strncpy(main_module_name, GET_VAR_NAME(flag->step5_flag)+6, 5);    
+  }else{
+    fprintf(stdout, "Please Input Module name.\n");
+    return FPERROR;
   }
   
-  if(filename_flag == 0)     return 0;
+  if(filename_flag == 0){
+    sprintf(output, "%s_%d_%d_%d.sfl", main_module_name,  ef[0], ef[1], ef[0]+ef[1]);
+    if ((fp = fopen(output, "w")) == NULL){
+      fprintf(stderr, "File open error.\n");
+      return FPERROR;
+    }
+  }
+
+  fprintf(stdout, "Output in %s\n", output);
   
   return fp;
 }

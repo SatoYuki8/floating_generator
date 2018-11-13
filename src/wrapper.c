@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "generate.h"
 
 int wrapp_adder(int bit_width, FILE *fp){
   fprintf(fp,

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include "generate.h"
 
 int BarrelShiftDec(int exp, int frac, int bit_width, FILE *fp){
 

@@ -1,16 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-int BarrelShiftDec(int exp, int frac, int bit_width, FILE *fp);
-int BarrelShift(int exp, int frac, int bit_width, FILE *fp);
-int LeadingZeroShiftDec(int exp, int frac, int bit_width, FILE *fp);
-int LeadingZeroShift(int exp, int frac, int bit_width, FILE *fp);
-int MantissaAdderDec(int bit_width, FILE *fp);  
-int MantissaAdder(int bit_width, FILE *fp);
-int IncreaseFracDec(int frac,  FILE *fp);
-int IncreaseFrac(int frac, FILE *fp);
-int add_float(int exp, int frac, int bit_width, FILE *fp, int pipe);
+#include "generate.h"
 
 int FloatingAdder(int exp, int frac, int bit_width, FILE *fp, int pipe){
   int frac_bit = frac + 6;    // msb || frac || G, R, S bits
