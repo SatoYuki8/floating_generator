@@ -3,7 +3,7 @@
 #include <string.h>
 #include "generate.h"
 
-int FloatingAdder(int exp, int frac, int bit_width, FILE *fp, int pipe){
+int FloatingAdder(int exp, int frac, int bit_width, FILE *fp, int pipe, char *module_name){
   int frac_bit = frac + 6;    // msb || frac || G, R, S bits
   int frac_msb = frac_bit - 1;
 
@@ -30,7 +30,7 @@ int FloatingAdder(int exp, int frac, int bit_width, FILE *fp, int pipe){
   IncreaseFracDec(frac,  fp);
   IncreaseFrac(frac, fp);
   
-  add_float(exp, frac, bit_width, fp, pipe);
+  add_float(exp, frac, bit_width, fp, pipe, module_name);
 
   return 0;
 }

@@ -29,10 +29,10 @@ char OneStr(int N, char in[]);
 int help();
 
 
-FILE *arg_check(int argc, char **argv, int ef[], flags_t flag);
-int FloatingAdder(int exp, int frac, int bit_width, FILE *fp, int pipe);
-int wrapper(int bit_width, FILE *fp);
-int fpadder_step_measurement(int exp, int frac, int width, FILE *fp, flags_t flag);
+FILE *arg_check(int argc, char **argv, int ef[], flags_t flag, char *top_module_name);
+int FloatingAdder(int exp, int frac, int bit_width, FILE *fp, int pipe, char *module_name);
+int wrapper(int bit_width, FILE *fp, char *module_name);
+int fpadder_step_measurement(int exp, int frac, int width, FILE *fp, flags_t flag, char *top_module_name);
 
 int BarrelShiftDec(int exp, int frac, int bit_width, FILE *fp);
 int BarrelShift(int exp, int frac, int bit_width, FILE *fp);
@@ -42,7 +42,7 @@ int MantissaAdderDec(int bit_width, FILE *fp);
 int MantissaAdder(int bit_width, FILE *fp);
 int IncreaseFracDec(int frac,  FILE *fp);
 int IncreaseFrac(int frac, FILE *fp);
-int add_float(int exp, int frac, int bit_width, FILE *fp, int pipe);
+int add_float(int exp, int frac, int bit_width, FILE *fp, int pipe, char *module_name);
 
 
 #endif

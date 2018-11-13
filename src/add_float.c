@@ -7,7 +7,7 @@
 #define P_ELSE }else{
 #define P_END }
 
-int add_float(int exp, int frac, int bit_width, FILE *fp, int pipe){
+int add_float(int exp, int frac, int bit_width, FILE *fp, int pipe, char *module_name){
   int moduleflag = 0;
   
   char type[8];
@@ -25,8 +25,9 @@ int add_float(int exp, int frac, int bit_width, FILE *fp, int pipe){
   /*************************************************/
   /* 入出力と内部の端子宣言部                      */
   /*************************************************/  
+
   fprintf(fp,
-	  "%s FloatingAdder{\n"
+	  "%s %s{\n"
 	  "input a<%d>, b<%d>;\n"
 	  "output result<%d>;\n"
 	  "instrin do;\n"
@@ -36,7 +37,7 @@ int add_float(int exp, int frac, int bit_width, FILE *fp, int pipe){
 	  "MantissaAdder madd;\n"
 	  "IncreaseFrac incfrac;\n"
 	  "\n",
-	  type,
+	  type, module_name,
 	  bit_width, bit_width,
 	  bit_width
 	  );

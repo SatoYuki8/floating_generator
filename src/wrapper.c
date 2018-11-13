@@ -3,14 +3,15 @@
 #include <string.h>
 #include "generate.h"
 
-int wrapp_adder(int bit_width, FILE *fp){
+int wrapp_adder(int bit_width, FILE *fp, char *module_name){
   fprintf(fp,
-	  "declare FloatingAdder{\n"
+	  "declare %s{\n"
 	  "input a<%d>, b<%d>;\n"
 	  "output result<%d>;\n"
 	  "instrin do;\n"
 	  "instr_arg do(a, b);\n"
 	  "}\n\n",
+	  module_name,
 	  bit_width, bit_width,
 	  bit_width
 	  );
@@ -54,7 +55,7 @@ int wrapp_adder(int bit_width, FILE *fp){
 	  "input a<%d>, b<%d>;\n"
 	  "output result<%d>;\n"
 	  "instrin do;\n"
-	  "FloatingAdder add;\n"
+	  "%s add;\n"
 	  "reg_wr ina<%d>;\n"
 	  "reg_wr inb<%d>;\n"
 	  "reg_wr out<%d>;\n"
@@ -68,6 +69,7 @@ int wrapp_adder(int bit_width, FILE *fp){
 	  "\n",
 	  bit_width,  bit_width,
 	  bit_width,
+	  module_name,
 	  bit_width,
 	  bit_width,
 	  bit_width
@@ -76,9 +78,9 @@ int wrapp_adder(int bit_width, FILE *fp){
   return 0;
 }
 
-int wrapper(int bit_width, FILE *fp){
+int wrapper(int bit_width, FILE *fp, char *module_name){
 
-  wrapp_adder(bit_width, fp);
+  wrapp_adder(bit_width, fp, module_name);
   
   return 0;
 }

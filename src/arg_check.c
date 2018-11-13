@@ -23,7 +23,7 @@ void first_message(){
 }
 
 //int arg_check(int argc, char **argv, int ef[], FILE *fp){
-FILE *arg_check(int argc, char **argv, int ef[], flags_t flag){
+FILE *arg_check(int argc, char **argv, int ef[], flags_t flag, char *top_module_name){
   FILE *fp;
   int i;
   char output[64];
@@ -83,9 +83,15 @@ FILE *arg_check(int argc, char **argv, int ef[], flags_t flag){
     fprintf(stdout, "Please Input Module name.\n");
     return FPERROR;
   }
+
+  if(flag->pipeline_flag == 1){
+    sprintf(top_module_name, "%s_%d_%d_%d", main_module_name,  ef[0], ef[1], ef[0]+ef[1]+1);
+  }else{
+    sprintf(top_module_name, "%s_%d_%d_%d_comb", main_module_name,  ef[0], ef[1], ef[0]+ef[1]+1);
+  }
   
   if(filename_flag == 0){
-    sprintf(output, "%s_%d_%d_%d.sfl", main_module_name,  ef[0], ef[1], ef[0]+ef[1]);
+    sprintf(output, "%s.sfl", top_module_name);
     if ((fp = fopen(output, "w")) == NULL){
       fprintf(stderr, "File open error.\n");
       return FPERROR;

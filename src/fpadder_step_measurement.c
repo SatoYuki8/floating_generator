@@ -35,14 +35,13 @@ int split(char *dst[], char *src, char delim){
   return count;
 }
 
-int fpadder_step_measurement(int exp, int frac, int width, FILE *fp, flags_t flag){
+int fpadder_step_measurement(int exp, int frac, int width, FILE *fp, flags_t flag, char *top_module_name){
   int step1 = flag->step1_flag;
   int step2 = flag->step2_flag;
   int step3 = flag->step3_flag;
   int step4 = flag->step4_flag;
   int step5 = flag->step5_flag;
 
-  char module_name[8];
   char input_name[64];
   char input_reg_name[64];  
   char output_name[64];
@@ -54,7 +53,6 @@ int fpadder_step_measurement(int exp, int frac, int width, FILE *fp, flags_t fla
   
   if(step1 == 1){
     /**************************** step1 *******************************/
-    strcpy(module_name, GET_VAR_NAME(step1));
     sprintf(input_name, "a<%d>, b<%d>", width, width);
     sprintf(in_argment, "a, b");
     sprintf(output_name, "exp_diff<%d>, Aa<%d>, Ab<%d>", exp, width, width);
@@ -65,7 +63,7 @@ int fpadder_step_measurement(int exp, int frac, int width, FILE *fp, flags_t fla
 	    "output %s;\n"
 	    "instrin do;\n"
 	    "sel wdiff<%d>;\n",
-	    module_name,
+	    top_module_name,
 	    input_name,
 	    output_name,
 	    exp+1
@@ -100,7 +98,6 @@ int fpadder_step_measurement(int exp, int frac, int width, FILE *fp, flags_t fla
     /**************************** step2 *******************************/
     BarrelShiftDec(exp, frac, frac+6, fp);
     BarrelShift(exp, frac, frac+6, fp);
-    strcpy(module_name, GET_VAR_NAME(step2));
     sprintf(input_name, "Aa<%d>, Ab<%d>, exp_diff<%d>", width, width, exp);
     sprintf(in_argment, "Aa, Ab, exp_diff");
     sprintf(output_name, "Bs1, Bs2, Bexp<%d>, Bm1<%d>, Bm2<%d>", exp, frac+6, frac+6);
@@ -113,7 +110,7 @@ int fpadder_step_measurement(int exp, int frac, int width, FILE *fp, flags_t fla
 	    "instrin do;\n"
 	    "sel xmsb<3>, ymsb<3>;\n"
 	    "BarrelShift bshift;\n",
-	    module_name,
+	    top_module_name,
 	    input_name,
 	    output_name
 	    );
@@ -151,7 +148,6 @@ int fpadder_step_measurement(int exp, int frac, int width, FILE *fp, flags_t fla
     /**************************** step3 *******************************/
     MantissaAdderDec(frac+6, fp);  
     MantissaAdder(frac+6, fp);
-    strcpy(module_name, GET_VAR_NAME(step3));
     sprintf(input_name, "Bs1, Bs2, Bexp<%d>, Bm1<%d>, Bm2<%d>", exp, frac+6, frac+6);
     sprintf(in_argment, "Bs1, Bs2, Bexp, Bm1, Bm2 ");
     sprintf(output_name, "Cm<%d>, Cs, Cexp<%d>", frac+6, exp);
@@ -164,7 +160,7 @@ int fpadder_step_measurement(int exp, int frac, int width, FILE *fp, flags_t fla
 	    "instrin do;\n"
 	    "sel m3<%d>;\n"
 	    "MantissaAdder madd;\n",
-	    module_name,
+	    top_module_name,
 	    input_name,
 	    output_name,
 	    frac+6
@@ -199,7 +195,6 @@ int fpadder_step_measurement(int exp, int frac, int width, FILE *fp, flags_t fla
     /**************************** step4 *******************************/
     LeadingZeroShiftDec(exp, frac, frac+6, fp);
     LeadingZeroShift(exp, frac, frac+6, fp);
-    strcpy(module_name, GET_VAR_NAME(step4));
     sprintf(input_name, "Cm<%d>, Cs, Cexp<%d>", frac+6, exp);
     sprintf(in_argment, "Cm, Cs, Cexp");
     sprintf(output_name, "Dm<%d>, Ds, Dexp<%d>", frac+6, exp);
@@ -211,7 +206,7 @@ int fpadder_step_measurement(int exp, int frac, int width, FILE *fp, flags_t fla
 	    "output %s;\n"
 	    "instrin do;\n"
 	    "LeadingZeroShift lzshift;\n",
-	    module_name,
+	    top_module_name,
 	    input_name,
 	    output_name
 	    );
@@ -247,7 +242,6 @@ int fpadder_step_measurement(int exp, int frac, int width, FILE *fp, flags_t fla
     /**************************** step5 *******************************/
     IncreaseFracDec(frac,  fp);
     IncreaseFrac(frac, fp);
-    strcpy(module_name, GET_VAR_NAME(step5));
     sprintf(input_name, "Dm<%d>, Ds, Dexp<%d>", frac+6, exp);
     sprintf(in_argment, "Dm, Ds, Dexp");
     sprintf(output_name, "z<%d>", width);
@@ -260,7 +254,7 @@ int fpadder_step_measurement(int exp, int frac, int width, FILE *fp, flags_t fla
 	    "instrin do;\n"
 	    "IncreaseFrac incfrac;\n"
 	    "sel round;\n",
-	    module_name,
+	    top_module_name,
 	    input_name,
 	    output_name
 	    );
@@ -291,7 +285,7 @@ int fpadder_step_measurement(int exp, int frac, int width, FILE *fp, flags_t fla
 	  "instr_arg do(%s);\n"
 	  "}\n"
 	  "\n",
-	  module_name,
+	  top_module_name,
 	  input_name,
 	  output_name,
 	  in_argment
@@ -309,7 +303,7 @@ int fpadder_step_measurement(int exp, int frac, int width, FILE *fp, flags_t fla
 	  "instruct do par{\n",
 	  input_name,
 	  output_name,
-	  module_name, module_name,
+	  top_module_name, top_module_name,
 	  input_reg_name,
 	  output_reg_name
 	  );
@@ -328,14 +322,14 @@ int fpadder_step_measurement(int exp, int frac, int width, FILE *fp, flags_t fla
 	    );
   }
   
-  fprintf(fp, "%.4s.do(%s);\n", module_name, in_reg_argment);
+  fprintf(fp, "%.4s.do(%s);\n", top_module_name, in_reg_argment);
 
   t = split(tmp, out_argment, ',');
   regt = split(regtmp, out_reg_argment, ',');
   for(i=0;i<t;i++){
     fprintf(fp,
 	    "%s := %.4s.%s;\n",
-	    regtmp[i], module_name, tmp[i]
+	    regtmp[i], top_module_name, tmp[i]
 	    );
   }
 
