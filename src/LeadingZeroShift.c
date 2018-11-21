@@ -22,7 +22,7 @@ int LeadingZeroShift(int exp, int frac, int bit_width, FILE *fp){
   int shamt = (int)log2(bit_width-1) + 1;
 
   fprintf(fp,
-	  "module LeadingZeroShift{\n"
+	  "circuit LeadingZeroShift{\n"
 	  "input a<%d>;\n"
 	  "output amount<%d>;\n"
 	  "output f<%d>;\n"
@@ -41,6 +41,7 @@ int LeadingZeroShift(int exp, int frac, int bit_width, FILE *fp){
 
   fprintf(fp, "instruct do par{\n");
 
+  /*
   char *zero;
   for (i=0;i<shamt;i++){
     fputs("alt{\n", fp);
@@ -63,10 +64,30 @@ int LeadingZeroShift(int exp, int frac, int bit_width, FILE *fp){
 	      shamt-i-1, i, i-1
 	      );
     }
+  */
+  for (i=0;i<shamt;i++){
+    fputs("alt{\n", fp);
 
+    if (i == 0){
+      fprintf(fp,
+	      "(a<%d:%d> == (%d#0b0)): par{ a%d = 0b1; t%d = a<%d:0>||(%d#0b0); }\n"
+	      "else: par{ a%d = 0b0; t%d = a; }\n",
+	      bit_width-1, bit_width-(int)pow(2,shamt-i-1), (int)pow(2,shamt-i-1), shamt-i-1, i, bit_width-(int)pow(2,shamt-i-1)-1 ,(int)pow(2,shamt-i-1),	   
+	      shamt-i-1, i
+	      );
+    }else{
+      fprintf(fp,
+	      "(t%d<%d:%d> == (%d#0b0)): par{ a%d = 0b1; t%d = t%d<%d:0>||(%d#0b0); }\n"
+	      "else: par{ a%d = 0b0; t%d = t%d; }\n",
+	      i-1 ,bit_width-1, bit_width-(int)pow(2,shamt-i-1), (int)pow(2,shamt-i-1), shamt-i-1, i, i-1, bit_width-(int)pow(2,shamt-i-1)-1 ,(int)pow(2,shamt-i-1),	   
+	      shamt-i-1, i, i-1
+	      );
+    }
+  
+  
     fputs("}\n", fp);
   }
-  free(zero);
+    //free(zero);
 
     int j;
     char *one_amt;

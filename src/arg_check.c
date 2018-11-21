@@ -70,15 +70,15 @@ FILE *arg_check(int argc, char **argv, int ef[], flags_t flag, char *top_module_
   if(flag->module_flag == 1){
     strcpy(main_module_name, "FPAdder");
   }else if(flag->step1_flag == 1){
-    strncpy(main_module_name, GET_VAR_NAME(flag->step1_flag)+6, 5);
+    strcpy(main_module_name, "step1");
   }else if(flag->step2_flag == 1){
-    strncpy(main_module_name, GET_VAR_NAME(flag->step2_flag)+6, 5);
+    strcpy(main_module_name, "step2");
   }else if(flag->step3_flag == 1){
-    strncpy(main_module_name, GET_VAR_NAME(flag->step3_flag)+6, 5);
+    strcpy(main_module_name, "step3");
   }else if(flag->step4_flag == 1){
-    strncpy(main_module_name, GET_VAR_NAME(flag->step4_flag)+6, 5);
+    strcpy(main_module_name, "step4");
   }else if(flag->step5_flag == 1){
-    strncpy(main_module_name, GET_VAR_NAME(flag->step5_flag)+6, 5);    
+    strcpy(main_module_name, "step5");    
   }else{
     fprintf(stdout, "Please Input Module name.\n");
     return FPERROR;
