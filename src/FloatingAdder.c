@@ -3,7 +3,7 @@
 #include <string.h>
 #include "generate.h"
 
-int FloatingAdder(int exp, int frac, int bit_width, FILE *fp, int pipe, char *module_name){
+int FloatingAdder(int exp, int frac, int bit_width, FILE *fp, flags_t flag, char *module_name){
   int frac_bit = frac + 6;    // msb || frac || G, R, S bits
   int frac_msb = frac_bit - 1;
 
@@ -21,8 +21,8 @@ int FloatingAdder(int exp, int frac, int bit_width, FILE *fp, int pipe, char *mo
   BarrelShiftDec(exp, frac, frac_bit, fp);
   BarrelShift(exp, frac, frac_bit, fp);
   
-  LeadingZeroShiftDec(exp, frac, frac_bit, fp);
-  LeadingZeroShift(exp, frac, frac_bit, fp);
+  LeadingZeroShiftDec(exp, frac, frac_bit-1, fp);
+  LeadingZeroShift(exp, frac, frac_bit-1, fp);
   
   MantissaAdderDec(frac_bit, fp);  
   MantissaAdder(frac_bit, fp);
@@ -30,7 +30,7 @@ int FloatingAdder(int exp, int frac, int bit_width, FILE *fp, int pipe, char *mo
   IncreaseFracDec(frac,  fp);
   IncreaseFrac(frac, fp);
   
-  add_float(exp, frac, bit_width, fp, pipe, module_name);
+  add_float(exp, frac, bit_width, fp, flag, module_name);
 
   return 0;
 }

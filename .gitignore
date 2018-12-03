@@ -1,4 +1,7 @@
 bin/
 #check_scr/
+tmp/
 *~
+*.sfl
+*.o
 result_sample.result

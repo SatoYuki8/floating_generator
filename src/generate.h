@@ -5,6 +5,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
+#define P_IF if (flag->pipeline_flag == 1){
+#define P_ELSE }else{
+#define P_END }
+
+
 typedef struct flags{
   int module_flag;
   int wrapper_flag;
@@ -30,7 +36,7 @@ int help();
 
 
 FILE *arg_check(int argc, char **argv, int ef[], flags_t flag, char *top_module_name);
-int FloatingAdder(int exp, int frac, int bit_width, FILE *fp, int pipe, char *module_name);
+int FloatingAdder(int exp, int frac, int bit_width, FILE *fp, flags_t flag, char *module_name);
 int wrapper(int bit_width, FILE *fp, char *module_name);
 int fpadder_step_measurement(int exp, int frac, int width, FILE *fp, flags_t flag, char *top_module_name);
 
@@ -42,7 +48,19 @@ int MantissaAdderDec(int bit_width, FILE *fp);
 int MantissaAdder(int bit_width, FILE *fp);
 int IncreaseFracDec(int frac,  FILE *fp);
 int IncreaseFrac(int frac, FILE *fp);
-int add_float(int exp, int frac, int bit_width, FILE *fp, int pipe, char *module_name);
+ 
+int add_float(int exp, int frac, int bit_width, FILE *fp, flags_t flag, char *module_name);
+int fpadd_exp_comparison_declaration(FILE *fp, int exp, int width, char *sel, char *sel_or_reg);
+int fpadd_preshift_declaration(FILE *fp, int exp, int frac_bit, char *sel, char *sel_or_reg);
+int fpadd_mantissa_add_declaration(FILE *fp, int exp, int frac_bit, char *sel, char *sel_or_reg);
+int fpadd_leadingzeroshift_declaration(FILE *fp, int exp, int width, char *sel_or_reg);
+int fpadd_round_and_finish_declaration(FILE *fp, int frac, int width, char *sel, char *sel_or_reg);
+
+int fpadd_exp_comparison(FILE *fp, int exp, int frac, int width, flags_t flag);
+int fpadd_preshift(FILE *fp, int frac, int width, flags_t flag);
+int fpadd_mantissa_add(FILE *fp, int frac_bit, flags_t flag);
+int fpadd_leadingzeroshift(FILE *fp, int frac_bit, flags_t flag);
+int fpadd_round(FILE *fp, int frac, int width, flags_t flag);
 
 
 #endif

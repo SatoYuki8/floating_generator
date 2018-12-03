@@ -25,7 +25,7 @@ int generator(int argc, char **argv){
   bit_width = exp + frac + 1;
   
   if (flag->module_flag == 1){           /* When it generates FPadder module  */
-    FloatingAdder(exp, frac, bit_width, fp, flag->pipeline_flag, top_module_name);
+    FloatingAdder(exp, frac, bit_width, fp, flag, top_module_name);
     fprintf(stdout, "Generate FPAdder (exp=%d, frac=%d)\n", exp, frac);
     if(flag->pipeline_flag==1) fprintf(stdout, "  -->Pipeline Version\n");
     
