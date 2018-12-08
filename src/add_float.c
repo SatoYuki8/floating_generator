@@ -39,10 +39,10 @@ int fpadd_mantissa_add_declaration(FILE *fp, int exp, int frac_bit, char *sel, c
   return 1;
 }
 
-int fpadd_leadingzeroshift_declaration(FILE *fp, int exp, int width, char *sel_or_reg){
+int fpadd_leadingzeroshift_declaration(FILE *fp, int exp, int frac, char *sel_or_reg){
   fprintf(fp,
 	  "%s Ds, Dexp<%d>, Dm<%d>;\n",
-	  sel_or_reg, exp, width+4
+	  sel_or_reg, exp, frac+4
 	  );
   return 1;
 }
@@ -244,7 +244,7 @@ P_IF
 	  "par{\n"
 	  "alt{\n"
 	  "(Dm<%d>): par{\n"
-	  "rounded_frac = incfrac.do(Dm<2>&(Dm<3>|Dm<1>|Dm<0>), Dm<%d:3>);\n"
+	  "rounded_frac = incfrac.do(Dm<2>&(Dm<3>|Dm<1>|Dm<0>), Dm<%d:3>).out;\n"
 	  "relay E.return_res( Ds || (Dexp + incfrac.p) || rounded_frac );\n"
 	  "}\n"
 	  "else: relay E.return_res(%d#0b0);\n"
@@ -260,8 +260,8 @@ P_ELSE
   fprintf(fp,
 	  "alt{\n"
 	  "(Dm<%d>): par{\n"
-	  "rounded_frac = incfrac.do(Dm<2>&(Dm<3>|Dm<1>|Dm<0>), Dm<%d:3>);\n"
-	  "relay z = ( Ds || (Dexp + incfrac.p) || rounded_frac );\n"
+	  "rounded_frac = incfrac.do(Dm<2>&(Dm<3>|Dm<1>|Dm<0>), Dm<%d:3>).out;\n"
+	  "z = ( Ds || (Dexp + incfrac.p) || rounded_frac );\n"
 	  "}\n"
 	  "else: z = (%d#0b0);\n"
 	  "}\n",
@@ -322,7 +322,7 @@ P_END
  fpadd_mantissa_add_declaration(fp, exp, frac_bit, sel, sel_or_reg);
 
   //leading zero shift
- fpadd_leadingzeroshift_declaration(fp, exp, width, sel_or_reg);
+ fpadd_leadingzeroshift_declaration(fp, exp, frac, sel_or_reg);
  
   //rond and finish
  fpadd_round_and_finish_declaration(fp, frac, width, sel, sel_or_reg);

@@ -53,7 +53,7 @@ int add_float(int exp, int frac, int bit_width, FILE *fp, flags_t flag, char *mo
 int fpadd_exp_comparison_declaration(FILE *fp, int exp, int width, char *sel, char *sel_or_reg);
 int fpadd_preshift_declaration(FILE *fp, int exp, int frac_bit, char *sel, char *sel_or_reg);
 int fpadd_mantissa_add_declaration(FILE *fp, int exp, int frac_bit, char *sel, char *sel_or_reg);
-int fpadd_leadingzeroshift_declaration(FILE *fp, int exp, int width, char *sel_or_reg);
+int fpadd_leadingzeroshift_declaration(FILE *fp, int exp, int frac, char *sel_or_reg);
 int fpadd_round_and_finish_declaration(FILE *fp, int frac, int width, char *sel, char *sel_or_reg);
 
 int fpadd_exp_comparison(FILE *fp, int exp, int frac, int width, flags_t flag);

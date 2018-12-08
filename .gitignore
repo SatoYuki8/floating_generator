@@ -1,6 +1,7 @@
 bin/
 #check_scr/
 tmp/
+qua/
 *~
 *.sfl
 *.o

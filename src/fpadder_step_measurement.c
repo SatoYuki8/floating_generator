@@ -50,6 +50,8 @@ int fpadder_step_measurement(int exp, int frac, int width, FILE *fp, flags_t fla
   char in_reg_argment[32];
   char out_argment[32];
   char out_reg_argment[32];
+
+  flag->pipeline_flag = 0;
   
   if(step1 == 1){
     /**************************** step1 *******************************/
@@ -68,28 +70,14 @@ int fpadder_step_measurement(int exp, int frac, int width, FILE *fp, flags_t fla
 	    output_name,
 	    exp+1
 	    );
+
+    fprintf(fp, "instruct do par{\n");
+    fpadd_exp_comparison(fp, exp, frac, width, flag);
     fprintf(fp,
-	    "instruct do par{\n"
-	    "wdiff = (0b0||a<%d:%d>) + (^(0b0||b<%d:%d>) + 0b1);\n"
-	    "alt{\n"
-	    "(wdiff<%d>): par{\n"
-	    "exp_diff = ^wdiff<%d:0> + 0b1;\n"
-	    "Aa = b;\n"
-	    "Ab = a;\n"
-	    "}\n"
-	    "else: par{\n"
-	    "exp_diff = wdiff<%d:0>;\n"
-	    "Aa = a; Ab = b;\n"
 	    "}\n"
 	    "}\n"
-	    "}\n"
-	    "}\n"
-	    "\n",
-	    width-2, width-exp-1, width-2, width-exp-1,
-	    exp,
-	    exp-1,
-	    exp-1
 	    );
+        
     sprintf(input_reg_name, "ina<%d>, inb<%d>", width, width);
     sprintf(in_reg_argment, "ina, inb");
     sprintf(output_reg_name, "diff<%d>, outa<%d>, outb<%d>", exp, width, width);
@@ -114,32 +102,14 @@ int fpadder_step_measurement(int exp, int frac, int width, FILE *fp, flags_t fla
 	    input_name,
 	    output_name
 	    );
+
+    fprintf(fp, "instruct do par{\n");
+    fpadd_preshift(fp, frac, width, flag);
     fprintf(fp,
-	    "instruct do par{\n"
-	    "alt{\n"
-	    "(Aa<%d:0> == %d#0b0): xmsb = 0b000;\n"
-	    "else: xmsb = 0b001;\n"
 	    "}\n"
-	    "alt{\n"
-	    "(Ab<%d:0> == %d#0b0): ymsb = 0b000;\n"
-	    "else: ymsb = 0b001;\n"
 	    "}\n"
-	    "Bm1 = xmsb || Aa<%d:0> || 0b000;\n"
-	    "Bm2 = bshift.do((ymsb || Ab<%d:0> || 0b000), exp_diff).f;\n"
-	    "Bs1 = Aa<%d>;\n"
-	    "Bs2 = Ab<%d>;\n"
-	    "Bexp = Aa<%d:%d>;\n"
-	    "}\n"
-	    "}\n\n",
-	    width-2, width-1,
-	    width-2, width-1,
-	    frac-1,
-	    frac-1,
-	    width-1,
-	    width-1,
-	    width-2, frac
 	    );
-    
+        
     sprintf(input_reg_name, "ina<%d>, inb<%d>, diff<%d>", width, width, exp);
     sprintf(in_reg_argment, "ina, inb, diff");
     sprintf(output_reg_name, "bs1, bs2, bexp<%d>, bm1<%d>, bm2<%d>", exp, frac+6, frac+6);
@@ -165,39 +135,25 @@ int fpadder_step_measurement(int exp, int frac, int width, FILE *fp, flags_t fla
 	    output_name,
 	    frac+6
 	    );
+
+    fprintf(fp, "instruct do par{\n");
+    fpadd_mantissa_add(fp, frac+6, flag);
     fprintf(fp,
-	    "instruct do par{\n"
-	    "m3 = madd.do(Bs1, Bs2, Bm1, Bm2).r1;\n"
-	    "alt{\n"
-	    "(m3<%d>): par{\n"
-	    "Cm = ^m3 + 0b1;\n"
-	    "Cs = m3<%d>;\n"
-	    "Cexp=Bexp;\n"
-	    "}\n"
-	    "else: par{\n"
-	    "Cm = m3;\n"
-	    "Cs = m3<%d>;\n"
-	    "Cexp=Bexp;\n"
 	    "}\n"
 	    "}\n"
-	    "}\n"
-	    "}\n\n",
-	    frac+5,
-	    frac+5,
-	    frac+5
 	    );
-    
+        
     sprintf(input_reg_name, "bs1, bs2, bexp<%d>, bm1<%d>, bm2<%d>", exp, frac+6, frac+6);
     sprintf(in_reg_argment, "bs1, bs2, bexp, bm1, bm2");
     sprintf(output_reg_name, "cm<%d>, cs, cexp<%d>", frac+6, exp);
     sprintf(out_reg_argment, "cm, cs, cexp");
   }else if(step4 == 1){
     /**************************** step4 *******************************/
-    LeadingZeroShiftDec(exp, frac, frac+6, fp);
-    LeadingZeroShift(exp, frac, frac+6, fp);
+    LeadingZeroShiftDec(exp, frac, frac+5, fp);
+    LeadingZeroShift(exp, frac, frac+5, fp);
     sprintf(input_name, "Cm<%d>, Cs, Cexp<%d>", frac+6, exp);
     sprintf(in_argment, "Cm, Cs, Cexp");
-    sprintf(output_name, "Dm<%d>, Ds, Dexp<%d>", frac+6, exp);
+    sprintf(output_name, "Dm<%d>, Ds, Dexp<%d>", frac+4, exp);
     sprintf(out_argment, "Dm, Ds, Dexp");
 
     fprintf(fp,
@@ -210,39 +166,23 @@ int fpadder_step_measurement(int exp, int frac, int width, FILE *fp, flags_t fla
 	    input_name,
 	    output_name
 	    );
+
+    fprintf(fp, "instruct do par{\n");
+    fpadd_leadingzeroshift(fp, frac+6, flag);
     fprintf(fp,
-	    "instruct do par{\n"
-	    "alt{\n"
-	    "(Cm == %d#0b0): par{\n"
-	    "Ds = 0b0;\n"
-	    "Dexp = %d#0b0;\n"
-	    "Dm = %d#0b0;\n"
-	    "}\n"
-	    "else: par{\n"
-	    "lzshift.do(Cm<%d:0> || 0b0);\n"
-	    "Ds = Cs;\n"
-	    "Dexp = (Cexp + ^(lzshift.amount) + 0b1) + 0b1;\n"
-	    "Dm = lzshift.f;\n"
 	    "}\n"
 	    "}\n"
-	    "}\n"
-	    "}\n"
-	    "\n",
-	    frac+6,
-	    exp,
-	    frac+6,
-	    frac+4
 	    );
-    
+        
     sprintf(input_reg_name, "cm<%d>, cs, cexp<%d>", frac+6, exp);
     sprintf(in_reg_argment, "cm, cs, cexp");    
-    sprintf(output_reg_name, "dm<%d>, ds, dexp<%d>", frac+6, exp);
+    sprintf(output_reg_name, "dm<%d>, ds, dexp<%d>", frac+4, exp);
     sprintf(out_reg_argment, "dm, ds, dexp");
   }else if(step5 == 1){
     /**************************** step5 *******************************/
     IncreaseFracDec(frac,  fp);
     IncreaseFrac(frac, fp);
-    sprintf(input_name, "Dm<%d>, Ds, Dexp<%d>", frac+6, exp);
+    sprintf(input_name, "Dm<%d>, Ds, Dexp<%d>", frac+4, exp);
     sprintf(in_argment, "Dm, Ds, Dexp");
     sprintf(output_name, "z<%d>", width);
     sprintf(out_argment, "z");
@@ -253,22 +193,21 @@ int fpadder_step_measurement(int exp, int frac, int width, FILE *fp, flags_t fla
 	    "output %s;\n"
 	    "instrin do;\n"
 	    "IncreaseFrac incfrac;\n"
-	    "sel round;\n",
+	    "sel rounded_frac<%d>;\n",
 	    top_module_name,
 	    input_name,
-	    output_name
+	    output_name,
+	    frac
 	    );
+
+    fprintf(fp, "instruct do par{\n");
+    fpadd_round(fp, frac, width, flag);
     fprintf(fp,
-	    "instruct do par{\n"
-	    "round = Dm<4>&(Dm<5>|Dm<3>|(/|Dm<2:0>));\n"
-	    "incfrac.do(round, Dm<%d:5>);\n"
-	    "z = Ds || (Dexp + incfrac.p) || incfrac.out;\n\n"
 	    "}\n"
-	    "}\n\n",
-	    frac+4
+	    "}\n"
 	    );
     
-    sprintf(input_reg_name, "dm<%d>, ds, dexp<%d>", frac+6, exp);
+    sprintf(input_reg_name, "dm<%d>, ds, dexp<%d>", frac+4, exp);
     sprintf(in_reg_argment, "dm, ds, dexp");
     sprintf(output_reg_name, "result<%d>", width);
     sprintf(out_reg_argment, "result");    
