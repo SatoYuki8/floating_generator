@@ -17,10 +17,10 @@ void flags_init(flags_t flag){
 
 int help(){
   puts("******************* HELP **********************\n"
-       "す　お\n"
-       "い　な\n"
-       "た　か\n"
-       "。　が\n"
+       "\n"
+       "\n"
+       "\n"
+       "\n"
        );
   return 0;
 }

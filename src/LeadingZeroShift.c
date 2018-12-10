@@ -41,59 +41,49 @@ int LeadingZeroShift(int exp, int frac, int bit_width, FILE *fp){
 
   fprintf(fp, "instruct do par{\n");
 
-  /*
-  char *zero;
-  for (i=0;i<shamt;i++){
-    fputs("alt{\n", fp);
-    
-    zero = (char *)malloc((int)pow(2,shamt-i-1)*2);
-    ZeroStr((int)pow(2,shamt-i-1), zero);
-
-    if (i == 0){
-      fprintf(fp,
-	      "(a<%d:%d> == %s): par{ a%d = 0b1; t%d = a<%d:0>||%s; }\n"
-	      "else: par{ a%d = 0b0; t%d = a; }\n",
-	      bit_width-1, bit_width-(int)pow(2,shamt-i-1), zero, shamt-i-1, i, bit_width-(int)pow(2,shamt-i-1)-1 ,zero,	   
-	      shamt-i-1, i
-	      );
-    }else{
-      fprintf(fp,
-	      "(t%d<%d:%d> == %s): par{ a%d = 0b1; t%d = t%d<%d:0>||%s; }\n"
-	      "else: par{ a%d = 0b0; t%d = t%d; }\n",
-	      i-1 ,bit_width-1, bit_width-(int)pow(2,shamt-i-1), zero, shamt-i-1, i, i-1, bit_width-(int)pow(2,shamt-i-1)-1 ,zero,	   
-	      shamt-i-1, i, i-1
-	      );
-    }
-  */
   for (i=0;i<shamt;i++){
     fputs("alt{\n", fp);
 
     if (i == 0){
       fprintf(fp,
-	      "(a<%d:%d> == (%d#0b0)): par{ a%d = 0b1; t%d = a<%d:0>||(%d#0b0); }\n"
-	      "else: par{ a%d = 0b0; t%d = a; }\n",
-	      bit_width-1, bit_width-(int)pow(2,shamt-i-1), (int)pow(2,shamt-i-1), shamt-i-1, i, bit_width-(int)pow(2,shamt-i-1)-1 ,(int)pow(2,shamt-i-1),	   
-	      shamt-i-1, i
+	      "(a<%d:%d> == (%d#0b0)): par{\n"
+	      "a%d = 0b1; \n"
+	      "t%d = a<%d:0>||(%d#0b0);\n"
+	      "}\n"
+	      "else: par{\n"
+	      "a%d = 0b0; \n"
+	      "t%d = a;\n"
+	      "}\n",
+	      bit_width-1, bit_width-(int)pow(2,shamt-i-1), (int)pow(2,shamt-i-1),
+	      shamt-i-1,
+	      i, bit_width-(int)pow(2,shamt-i-1)-1 ,(int)pow(2,shamt-i-1),	   
+	      shamt-i-1,
+	      i
 	      );
     }else{
       fprintf(fp,
-	      "(t%d<%d:%d> == (%d#0b0)): par{ a%d = 0b1; t%d = t%d<%d:0>||(%d#0b0); }\n"
-	      "else: par{ a%d = 0b0; t%d = t%d; }\n",
-	      i-1 ,bit_width-1, bit_width-(int)pow(2,shamt-i-1), (int)pow(2,shamt-i-1), shamt-i-1, i, i-1, bit_width-(int)pow(2,shamt-i-1)-1 ,(int)pow(2,shamt-i-1),	   
-	      shamt-i-1, i, i-1
+	      "(t%d<%d:%d> == (%d#0b0)): par{ \n"
+	      "a%d = 0b1; \n"
+	      "t%d = t%d<%d:0>||(%d#0b0); \n"
+	      "}\n"
+	      "else: par{ \n"
+	      "a%d = 0b0; \n"
+	      "t%d = t%d; \n"
+	      "}\n",
+	      i-1 ,bit_width-1, bit_width-(int)pow(2,shamt-i-1), (int)pow(2,shamt-i-1),
+	      shamt-i-1,
+	      i, i-1, bit_width-(int)pow(2,shamt-i-1)-1 ,(int)pow(2,shamt-i-1),	   
+	      shamt-i-1,
+	      i, i-1
 	      );
     }
-  
   
     fputs("}\n", fp);
   }
     //free(zero);
 
     int j;
-    char *one_amt;
-    one_amt = (char *)malloc(exp+2);
-    OneStr(exp, one_amt);
-    if (shamt > exp){     //指数部のビット幅がシフト量のビット幅より小さい時
+    if (shamt > exp){     //指数部の幅で表せられる値がシフト量より小さい時
     fprintf(fp,
 	    "alt{\n"
 	    "("
@@ -103,9 +93,9 @@ int LeadingZeroShift(int exp, int frac, int bit_width, FILE *fp){
       if(j != exp) fputs("|", fp);
     }
     fprintf(fp,
-	    "): amount = %s;\n"
+	    "): amount = %d#0b1;\n"
 	    "else: amount = ",
-	    one_amt
+	    exp
 	    );
     for (j=exp-1; j>=0; j--){
       if (j==exp-1) fprintf(fp, "a%d", j);
@@ -113,8 +103,11 @@ int LeadingZeroShift(int exp, int frac, int bit_width, FILE *fp){
     }
     fputs(";\n"
 	  "}\n", fp);
-  }else{                //指数部のビット幅がシフト量のビット幅以上の時
-    fputs("amount = ", fp); DecToBi(0, exp-shamt, fp);
+  }else{                //指数部で表せられる値がシフト量以上の時
+      fprintf(fp,
+	      "amount = (%d#0b0)",
+	      exp-shamt);
+      //DecToBi(0, exp-shamt, fp);
     for (j=shamt-1; j>=0; j--){
       if ((exp-shamt <= 0) && (j == shamt-1)) fprintf(fp, "a%d", j);
       else fprintf(fp, "||a%d", j);
@@ -129,7 +122,6 @@ int LeadingZeroShift(int exp, int frac, int bit_width, FILE *fp){
 	  shamt-1
 	  );
 
-  free(one_amt);
 
   return 0;
 }
