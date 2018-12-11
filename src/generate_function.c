@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "generate.h"
+#include "add_gen.h"
 
 void flags_init(flags_t flag){
   flag->module_flag = 0;

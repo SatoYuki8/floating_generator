@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "generate.h"
+#include "add_gen.h"
 
 #define FPERROR (FILE*)-1
 
@@ -23,7 +23,7 @@ void first_message(){
 }
 
 //int arg_check(int argc, char **argv, int ef[], FILE *fp){
-FILE *arg_check(int argc, char **argv, int ef[], flags_t flag, char *top_module_name){
+FILE *fpadd_arg_check(int argc, char **argv, int ef[], flags_t flag, char *top_module_name){
   FILE *fp;
   int i;
   char output[64];

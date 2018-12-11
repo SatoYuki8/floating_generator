@@ -1,7 +1,54 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "generate.h"
+#include "add_gen.h"
+
+#define FPERROR (FILE*)-1
+#define ERROR -1
+
+
+int wrapper_adder(int bit_width, FILE *fp, char *module_name){
+  fprintf(fp,
+	  "declare %s{\n"
+	  "input a<%d>, b<%d>;\n"
+	  "output result<%d>;\n"
+	  "instrin do;\n"
+	  "instr_arg do(a, b);\n"
+	  "}\n\n",
+	  module_name,
+	  bit_width, bit_width,
+	  bit_width
+	  );
+  
+  fprintf(fp,
+	  "module wrapper{\n"
+	  "input a<%d>, b<%d>;\n"
+	  "output result<%d>;\n"
+	  "instrin do;\n"
+	  "%s add;\n"
+	  "reg_wr ina<%d>;\n"
+	  "reg_wr inb<%d>;\n"
+	  "reg_wr out<%d>;\n"
+	  "instruct do par{\n"
+	  "ina:=a;\n"
+	  "inb:=b;\n"
+	  "out:=add.do(ina, inb).result;\n"
+	  "result = out;\n"
+	  "}\n"
+	  "}\n"
+	  "\n",
+	  bit_width,  bit_width,
+	  bit_width,
+	  module_name,
+	  bit_width,
+	  bit_width,
+	  bit_width
+	  );
+  
+  return 0;
+}
+
+
 
 int fpadd_exp_comparison_declaration(FILE *fp, int exp, int width, char *sel, char *sel_or_reg){
   fprintf(fp,
@@ -273,7 +320,7 @@ P_END
   return 1;
 }
 
-int add_float(int exp, int frac, int width, FILE *fp, flags_t flag, char *module_name){
+int FPAdder_Main(int exp, int frac, int width, FILE *fp, flags_t flag, char *module_name){
   int moduleflag = 0;
   
   char type[8];
@@ -371,6 +418,75 @@ P_END
 
   fprintf(fp, "}\n\n");  //finish
 
+  
+  return 0;
+}
+
+
+int FPAdder_Generator(int exp, int frac, int bit_width, FILE *fp, flags_t flag, char *module_name){
+  int frac_bit = frac + 6;    // msb || frac || G, R, S bits
+  int frac_msb = frac_bit - 1;
+
+  BarrelShiftDec(exp, frac, frac_bit, fp);
+  BarrelShift(exp, frac, frac_bit, fp);
+  
+  LeadingZeroShiftDec(exp, frac, frac_bit-1, fp);
+  LeadingZeroShift(exp, frac, frac_bit-1, fp);
+  
+  MantissaAdderDec(frac_bit, fp);  
+  MantissaAdder(frac_bit, fp);
+  
+  IncreaseFracDec(frac,  fp);
+  IncreaseFrac(frac, fp);
+  
+  FPAdder_Main(exp, frac, bit_width, fp, flag, module_name);
+
+  return 0;
+}
+
+
+int Manage_FPAdder_Generator(int argc, char **argv){  
+  int exp, frac, bit_width;
+  FILE *fp;
+  int ef[2];   //exp frac
+  flags_t flag;
+
+  char top_module_name[64];
+  
+  flags_init(flag);
+  
+  //if((arg_check(argc, argv, ef, fp)) == ERROR) return ERROR;
+  fp = fpadd_arg_check(argc, argv, ef, flag, top_module_name);
+  if(fp == FPERROR) return ERROR;
+  
+  exp = ef[0];
+  frac = ef[1];
+  bit_width = exp + frac + 1;
+  
+  if (flag->module_flag == 1){           /* When it generates FPadder module  */
+    FPAdder_Generator(exp, frac, bit_width, fp, flag, top_module_name);
+    fprintf(stdout, "Generate FPAdder (exp=%d, frac=%d)\n", exp, frac);
+    if(flag->pipeline_flag==1) fprintf(stdout, "  -->Pipeline Version\n");
+    
+  }else if((flag->step1_flag == 1) |     /* When it measure step latency */
+	   (flag->step2_flag == 1) |
+	   (flag->step3_flag == 1) |
+	   (flag->step4_flag == 1) |
+	   (flag->step5_flag == 1) 
+	   ){
+    fpadder_step_measurement(exp, frac, bit_width, fp, flag, top_module_name);
+    flag->wrapper_flag = 0;   //wrapperモジュールが2つできてしまうのを防ぐため
+  }else{
+    printf("Please Input Module name.\n");
+    return 0;
+  }
+  
+  if (flag->wrapper_flag == 1){
+    wrapper_adder(bit_width, fp, top_module_name);
+    fprintf(stdout, "Generate Wrapper Module\n");
+  }  
+  
+  fclose(fp);
   
   return 0;
 }

@@ -34,10 +34,11 @@ char ZeroStr(int N, char in[]);
 char OneStr(int N, char in[]);
 int help();
 
+int Manage_FPAdder_Generator(int argc, char **argv);
 
-FILE *arg_check(int argc, char **argv, int ef[], flags_t flag, char *top_module_name);
-int FloatingAdder(int exp, int frac, int bit_width, FILE *fp, flags_t flag, char *module_name);
-int wrapper(int bit_width, FILE *fp, char *module_name);
+FILE *fpadd_arg_check(int argc, char **argv, int ef[], flags_t flag, char *top_module_name);
+int FPAdder_Generator(int exp, int frac, int bit_width, FILE *fp, flags_t flag, char *module_name);
+int wrapper_adder(int bit_width, FILE *fp, char *module_name);
 int fpadder_step_measurement(int exp, int frac, int width, FILE *fp, flags_t flag, char *top_module_name);
 
 int BarrelShiftDec(int exp, int frac, int bit_width, FILE *fp);
@@ -49,7 +50,7 @@ int MantissaAdder(int bit_width, FILE *fp);
 int IncreaseFracDec(int frac,  FILE *fp);
 int IncreaseFrac(int frac, FILE *fp);
  
-int add_float(int exp, int frac, int bit_width, FILE *fp, flags_t flag, char *module_name);
+int FPAdder_Main(int exp, int frac, int bit_width, FILE *fp, flags_t flag, char *module_name);
 int fpadd_exp_comparison_declaration(FILE *fp, int exp, int width, char *sel, char *sel_or_reg);
 int fpadd_preshift_declaration(FILE *fp, int exp, int frac_bit, char *sel, char *sel_or_reg);
 int fpadd_mantissa_add_declaration(FILE *fp, int exp, int frac_bit, char *sel, char *sel_or_reg);
